@@ -959,16 +959,46 @@
       .book-inner,
       .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
 
+      .scorecard-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+
       .process-steps { grid-template-columns: 1fr 1fr; }
       .process-steps::before { display: none; }
 
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
+
+      /* Product 2 full-width audit card — stack on mobile */
+      .product-card[style*="grid-column"] > div {
+        grid-template-columns: 1fr !important;
+      }
+      .product-card[style*="grid-column"] .product-header {
+        border-radius: 0 !important;
+      }
+      .product-card[style*="grid-column"] .product-body {
+        grid-template-columns: 1fr !important;
+        border-left: none !important;
+        border-top: 1px solid var(--off);
+      }
     }
 
     @media (max-width: 600px) {
       .process-steps { grid-template-columns: 1fr; }
       .hero-stats { gap: 1.5rem; }
+
+      /* Scorecard capture form — stack button below input */
+      .capture-row { flex-direction: column; }
+      .capture-row input { min-width: unset; width: 100%; }
+      .capture-row .btn-primary { width: 100%; justify-content: center; }
+
+      /* Product cards — tighten padding on small screens */
+      .product-header { padding: 1.5rem 1.25rem 1.25rem; }
+      .product-body { padding: 1.25rem; }
+      .product-name { font-size: 1.05rem; }
+      .product-badge-row { flex-wrap: wrap; gap: 0.4rem; }
+
+      /* Section padding tighter on mobile */
+      section { padding: 60px 5%; }
+      #scorecard { padding: 50px 5%; }
     }
 
     /* mobile menu */
@@ -1163,7 +1193,7 @@
     </div>
     <div class="capture-box reveal">
       <h3>Get the Free Scorecard</h3>
-      <p>Enter your details below and we'll send you the scorecard instantly — plus a 5-day email series on reducing your nuclear verdict exposure.</p>
+      <p>Enter your details below and we'll send you the scorecard instantly — plus you'll receive the <strong style="color:var(--accent-glow);">Sigmatica Monday Edition</strong>, our weekly risk intelligence briefing for commercial operators.</p>
       <div class="form-group">
         <label style="color: var(--mist);">First Name</label>
         <input type="text" id="cap-name" placeholder="John" style="color:var(--white);" />
@@ -1208,7 +1238,7 @@
           <li>Instant risk level: Low / Moderate / High / Critical</li>
           <li>Grounded in ATRI's 600+ case study data</li>
           <li>Immediate PDF download — no waiting</li>
-          <li>Triggers 5-day email nurture series</li>
+          <li>Triggers subscription to the Monday Edition</li>
         </ul>
         <div class="product-price-row">
           <span class="price-current" style="color:var(--accent);">FREE</span>
@@ -1219,29 +1249,29 @@
       </div>
     </div>
 
-    <!-- FREE: Email Series -->
+    <!-- FREE: Monday Edition Newsletter -->
     <div class="product-card reveal">
       <div class="product-header">
         <div class="product-badge-row">
-          <span class="product-badge">Free with Scorecard</span>
-          <span class="product-badge" style="color:var(--accent-glow);background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.25);">Email Series</span>
+          <span class="product-badge">Free Subscription</span>
+          <span class="product-badge" style="color:var(--accent-glow);background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.25);">Weekly Newsletter</span>
         </div>
-        <div class="product-name">5 Things Plaintiffs' Attorneys Look For First</div>
+        <div class="product-name">The Sigmatica Monday Edition</div>
       </div>
       <div class="product-body">
-        <p class="product-desc">A 5-day email series covering the specific risk factors courts have consistently used to turn truck accidents into nuclear verdicts — delivered to your inbox.</p>
+        <p class="product-desc">Weekly risk intelligence for commercial operators — real verdicts, FMCSA compliance updates, legal developments, and actionable insights delivered every Monday morning.</p>
         <ul class="product-features">
-          <li>Day 1: The $51M question every operator should ask</li>
-          <li>Day 2: What attorneys look for in the first 48 hours</li>
-          <li>Day 3: The 60-minute post-crash window</li>
-          <li>Day 4: Why your hiring process may be your biggest liability</li>
-          <li>Day 5: What protected operations have in common</li>
+          <li>Verdict Watch: recent nuclear verdict breakdowns</li>
+          <li>FMCSA compliance updates that affect your operation</li>
+          <li>Legislative & tort reform developments</li>
+          <li>3 operator action items each week</li>
+          <li>Grounded in ATRI data and sourced case reporting</li>
         </ul>
         <div class="product-price-row">
           <span class="price-current" style="color:var(--accent);">FREE</span>
         </div>
         <a href="#scorecard" class="btn-outline" style="width:100%;justify-content:center;text-decoration:none;color:var(--navy);border-color:rgba(10,22,40,0.2);">
-          Get the Series Free →
+          Subscribe Free →
         </a>
       </div>
     </div>
@@ -1502,7 +1532,7 @@
       <h4>Services</h4>
       <ul>
         <li><a href="#products">Risk Reduction Asset Document</a></li>
-        <li><a href="#products">In-Depth Audit Report</a></li>
+        <li><a href="#scorecard">Monday Edition (Free)</a></li>
         <li><a href="#book">Discovery Call</a></li>
       </ul>
     </div>
@@ -1524,7 +1554,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span class="footer-copy">© 2025 Sigmatica. All rights reserved.</span>
+    <span class="footer-copy">© 2026 Sigmatica. All rights reserved.</span>
     <div class="footer-legal">
       <a href="#">Privacy Policy</a>
       <a href="#">Terms of Service</a>
@@ -1658,8 +1688,9 @@
     const name  = document.getElementById('cap-name').value.trim();
     const email = document.getElementById('cap-email').value.trim();
     if (!name || !email) { alert('Please enter your name and email.'); return; }
-    // Wire to your email platform here (Mailchimp, ConvertKit, etc.)
-    // Example: POST to your Mailchimp/ConvertKit API with { name, email }
+    // Wire to Kit (ConvertKit) API to add subscriber and trigger Monday Edition sequence
+    // POST to Kit API: https://api.convertkit.com/v3/forms/YOUR_FORM_ID/subscribe
+    // Body: { api_key: 'YOUR_KIT_API_KEY', first_name: name, email: email }
     document.getElementById('captureSuccess').style.display = 'block';
   }
 
