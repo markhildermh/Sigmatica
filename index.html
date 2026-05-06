@@ -1276,34 +1276,6 @@
       </div>
     </div>
 
-    <!-- Product 3: Templates Pack -->
-    <div class="product-card reveal">
-      <div class="product-header">
-        <div class="product-badge-row">
-          <span class="product-badge">Product 3</span>
-          <span class="product-badge sale">New</span>
-        </div>
-        <div class="product-name">Policy & Documentation Templates Pack</div>
-      </div>
-      <div class="product-body">
-        <p class="product-desc">Five ready-to-use templates that close the most common documentation gaps exploited in trucking litigation — based on FMCSA requirements and ATRI research.</p>
-        <ul class="product-features">
-          <li>Driver Qualification File (DQF) Master Checklist</li>
-          <li>Post-Incident Response Protocol</li>
-          <li>Cell Phone & Distracted Driving Policy + Sign-off</li>
-          <li>New Driver Hiring & Onboarding Documentation Kit</li>
-          <li>Annual Driver Safety Review & MVR Log</li>
-        </ul>
-        <div class="product-price-row">
-          <span class="price-current">$149</span>
-          <span class="price-save">Instant Download</span>
-        </div>
-        <button class="btn-primary" style="width:100%;justify-content:center;" onclick="openTemplatesModal()">
-          Purchase Templates Pack →
-        </button>
-      </div>
-    </div>
-
     <!-- Product 1: Asset Doc -->
     <div class="product-card featured reveal">
       <div class="product-header">
@@ -1340,6 +1312,34 @@
       </div>
     </div>
 
+    <!-- Product 3: Templates Pack -->
+    <div class="product-card reveal">
+      <div class="product-header">
+        <div class="product-badge-row">
+          <span class="product-badge">Product 3</span>
+          <span class="product-badge sale">New</span>
+        </div>
+        <div class="product-name">Policy & Documentation Templates Pack</div>
+      </div>
+      <div class="product-body">
+        <p class="product-desc">Five ready-to-use templates that close the most common documentation gaps exploited in trucking litigation — based on FMCSA requirements and ATRI research.</p>
+        <ul class="product-features">
+          <li>Driver Qualification File (DQF) Master Checklist</li>
+          <li>Post-Incident Response Protocol</li>
+          <li>Cell Phone & Distracted Driving Policy + Sign-off</li>
+          <li>New Driver Hiring & Onboarding Documentation Kit</li>
+          <li>Annual Driver Safety Review & MVR Log</li>
+        </ul>
+        <div class="product-price-row">
+          <span class="price-current">$149</span>
+          <span class="price-save">Instant Download</span>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;" onclick="openTemplatesModal()">
+          Purchase Templates Pack →
+        </button>
+      </div>
+    </div>
+
     <!-- Product 2: Full Audit — spans full width -->
     <div class="product-card reveal" style="grid-column:1/-1;">
       <div style="display:grid;grid-template-columns:280px 1fr;gap:0;">
@@ -1361,7 +1361,7 @@
           <div style="display:flex;flex-direction:column;justify-content:center;gap:0.75rem;">
             <span class="price-contact">Contact for Pricing</span>
             <a href="#contact" class="btn-outline" style="text-decoration:none;justify-content:center;color:var(--navy);border-color:rgba(10,22,40,0.2);">
-              Enquire →
+              Inquire →
             </a>
           </div>
         </div>
@@ -1420,12 +1420,21 @@
       </div>
     </div>
     <div class="reveal">
-      <div class="calendly-embed">
-        <iframe
-          src="https://cal.com/m-j67xh2/15min?embed=true"
-          title="Book a Call with Sigmatica"
-          loading="lazy"
-        ></iframe>
+      <div class="calendly-embed" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;padding:3rem 2.5rem;background:var(--white);border-radius:14px;border:1.5px solid rgba(59,130,246,0.15);box-shadow:0 8px 40px rgba(10,22,40,0.08);min-height:380px;">
+        <div style="width:64px;height:64px;background:rgba(59,130,246,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;">Book Your Free 15-Minute Call</div>
+          <p style="font-size:0.92rem;color:var(--text-light);line-height:1.7;max-width:320px;margin:0 auto;">Choose a time that works for you. No sales pressure — just a direct conversation about where your operation's exposure sits.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;width:100%;max-width:300px;">
+          <a href="https://cal.com/m-j67xh2/15min" target="_blank" rel="noopener" class="btn-primary" style="width:100%;justify-content:center;text-decoration:none;font-size:1rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schedule a Call →
+          </a>
+          <span style="font-size:0.75rem;color:var(--text-light);">Opens in a new tab · Powered by Cal.com</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1549,7 +1558,7 @@
       <ul>
         <li><a href="#book">Book a Free Call</a></li>
         <li><a href="#products" onclick="openPayModal()">Purchase Product 1</a></li>
-        <li><a href="#contact">Enquire About Audit</a></li>
+        <li><a href="#contact">Inquire About Audit</a></li>
       </ul>
     </div>
   </div>
