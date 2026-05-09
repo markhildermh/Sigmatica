@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sigmatica | Risk Auditing & Consulting</title>
+  <meta name="description" content="Sigmatica helps commercial operators reduce legal risk exposure, avoid nuclear verdicts, and protect their business through expert risk auditing and consulting." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #0a1628;
+      --navy-mid:   #112240;
+      --blue:       #1a4f8a;
+      --blue-light: #2563b0;
+      --accent:     #3b82f6;
+      --accent-glow:#60a5fa;
+      --steel:      #8fa6c7;
+      --mist:       #c8d8ec;
+      --white:      #f4f8ff;
+      --off:        #e8eef7;
+      --text:       #1e2d42;
+      --text-light: #4a6080;
+      --gold:       #c49a28;
+      --gold-light: #e8b84b;
+      --radius:     8px;
+      --transition: 0.25s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    h1,h2,h3,h4 { font-family: 'Sora', sans-serif; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;
+      height: 72px;
+      background: rgba(10,22,40,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(59,130,246,0.15);
+    }
+
+    .nav-logo {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--mist);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--accent-glow); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 0.5rem 1.2rem;
+      border-radius: var(--radius);
+      font-weight: 600 !important;
+      transition: background var(--transition) !important;
+    }
+    .nav-cta:hover { background: var(--blue-light) !important; color: #fff !important; }
+
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-hamburger span { width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: 0.3s; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 55%, #0d1f3c 100%);
+      display: flex; align-items: center;
+      padding: 120px 5% 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(37,99,176,0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 30% at 20% 70%, rgba(59,130,246,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* grid lines */
+    #hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 720px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(59,130,246,0.12);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 100px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-glow);
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent-glow);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    h1.hero-title {
+      font-size: clamp(2.4rem, 5.5vw, 4rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    h1.hero-title em {
+      font-style: normal;
+      color: var(--accent-glow);
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--steel);
+      line-height: 1.7;
+      max-width: 580px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.85rem 1.8rem;
+      border-radius: var(--radius);
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary:hover {
+      background: var(--blue-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(59,130,246,0.45);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      padding: 0.85rem 1.8rem;
+      border-radius: var(--radius);
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent-glow);
+      background: rgba(59,130,246,0.08);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      margin-top: 4rem;
+      display: flex; flex-wrap: wrap; gap: 2.5rem;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+    }
+    .stat-num span { color: var(--accent); }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--steel);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-top: 0.15rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--navy-mid);
+      border-top: 1px solid rgba(59,130,246,0.12);
+      border-bottom: 1px solid rgba(59,130,246,0.12);
+      padding: 1.25rem 5%;
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 2rem;
+    }
+    .trust-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel);
+    }
+    .trust-items {
+      display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center;
+    }
+    .trust-item {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--mist);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .trust-item svg { color: var(--accent); }
+
+    /* ── SECTION COMMONS ── */
+    section { padding: 90px 5%; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--text-light);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--off); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .about-visual {
+      position: relative;
+    }
+
+    .about-card {
+      background: var(--navy);
+      border-radius: 12px;
+      padding: 2.5rem;
+      border: 1px solid rgba(59,130,246,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--blue-light));
+    }
+
+    .about-card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel);
+      margin-bottom: 1.5rem;
+    }
+
+    .risk-meter {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .risk-row { display: flex; flex-direction: column; gap: 0.35rem; }
+    .risk-label-row { display: flex; justify-content: space-between; }
+    .risk-label { font-size: 0.82rem; color: var(--mist); font-weight: 500; }
+    .risk-val { font-size: 0.82rem; color: var(--accent-glow); font-weight: 700; }
+    .risk-track {
+      height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;
+    }
+    .risk-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-glow));
+      transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+      width: 0;
+    }
+
+    .about-text .section-title { color: var(--navy); }
+
+    .about-points {
+      margin-top: 1.75rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .about-point {
+      display: flex; gap: 0.85rem; align-items: flex-start;
+    }
+    .point-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(59,130,246,0.1);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+      font-size: 1rem;
+    }
+    .point-text h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.2rem;
+    }
+    .point-text p {
+      font-size: 0.87rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* ── PRODUCTS ── */
+    #products { background: var(--white); }
+
+    .products-header { max-width: 600px; margin-bottom: 3.5rem; }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: var(--white);
+      border: 1.5px solid var(--off);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(10,22,40,0.1);
+      border-color: rgba(59,130,246,0.3);
+    }
+
+    .product-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 8px 40px rgba(59,130,246,0.12);
+    }
+
+    .product-header {
+      background: var(--navy);
+      padding: 2rem 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-header::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .product-badge-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .product-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-glow);
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.25);
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+    }
+    .product-badge.sale {
+      color: var(--gold-light);
+      background: rgba(196,154,40,0.15);
+      border-color: rgba(196,154,40,0.3);
+    }
+    .product-badge.coming {
+      color: var(--steel);
+      background: rgba(143,166,199,0.1);
+      border-color: rgba(143,166,199,0.2);
+    }
+
+    .product-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.3;
+    }
+
+    .product-body { padding: 1.75rem 2rem 2rem; }
+
+    .product-desc {
+      font-size: 0.92rem;
+      color: var(--text-light);
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .product-features {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      margin-bottom: 1.75rem;
+    }
+    .product-features li {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.87rem;
+      color: var(--text);
+    }
+    .product-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .product-price-row {
+      display: flex; align-items: flex-end; gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .price-current {
+      font-family: 'Sora', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.03em;
+    }
+    .price-original {
+      font-size: 1rem;
+      color: var(--text-light);
+      text-decoration: line-through;
+      padding-bottom: 0.3rem;
+    }
+    .price-save {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(196,154,40,0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      padding-bottom: 0.35rem;
+    }
+    .price-contact {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .guarantee-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(34,197,94,0.07);
+      border: 1.5px solid rgba(34,197,94,0.25);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+      margin-top: 1rem;
+    }
+    .guarantee-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .guarantee-text strong {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #166534;
+      margin-bottom: 0.15rem;
+    }
+    .guarantee-text span {
+      font-size: 0.78rem;
+      color: #15803d;
+      line-height: 1.5;
+    }
+
+    /* ── EMAIL CAPTURE ── */
+    #scorecard {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      padding: 70px 5%;
+      border-top: 1px solid rgba(59,130,246,0.15);
+      border-bottom: 1px solid rgba(59,130,246,0.15);
+    }
+    .scorecard-inner {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .scorecard-text .section-title { color: var(--white); }
+    .scorecard-text .section-sub { color: var(--steel); }
+    .scorecard-text .section-tag { color: var(--accent-glow); }
+
+    .scorecard-bullets {
+      margin-top: 1.25rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .scorecard-bullet {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.88rem; color: var(--mist);
+    }
+    .scorecard-bullet .chk {
+      color: var(--accent-glow); font-weight: 700; flex-shrink: 0;
+    }
+
+    .capture-box {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(59,130,246,0.25);
+      border-radius: 14px;
+      padding: 2rem;
+    }
+    .capture-box h3 {
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.4rem;
+    }
+    .capture-box p {
+      font-size: 0.85rem; color: var(--steel);
+      margin-bottom: 1.25rem; line-height: 1.6;
+    }
+    .capture-row {
+      display: flex; gap: 0.6rem; flex-wrap: wrap;
+    }
+    .capture-row input {
+      flex: 1; min-width: 180px;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid rgba(59,130,246,0.2);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.06);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .capture-row input::placeholder { color: var(--steel); }
+    .capture-row input:focus { border-color: var(--accent); }
+    .capture-success {
+      display: none;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      color: var(--accent-glow);
+      font-weight: 500;
+      margin-top: 0.75rem;
+    }
+    .capture-note {
+      font-size: 0.73rem; color: var(--steel);
+      margin-top: 0.6rem;
+      text-align: center;
+    }
+
+    .product-tag-free {
+      color: var(--accent-glow);
+      background: rgba(59,130,246,0.15);
+      border-color: rgba(59,130,246,0.25);
+    }
+
+    /* ── PROCESS ── */
+    #process { background: var(--navy); }
+    #process .section-title { color: var(--white); }
+    #process .section-sub { color: var(--steel); }
+    #process .section-tag { color: var(--accent-glow); }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+      max-width: 1100px;
+      margin-left: auto; margin-right: auto;
+      position: relative;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: 12%; right: 12%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), rgba(59,130,246,0.3), transparent);
+    }
+
+    .step-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(59,130,246,0.15);
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .step-card:hover {
+      background: rgba(59,130,246,0.06);
+      border-color: rgba(59,130,246,0.35);
+    }
+
+    .step-num {
+      width: 52px; height: 52px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 auto 1.25rem;
+      position: relative; z-index: 1;
+    }
+
+    .step-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+    }
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--steel);
+      line-height: 1.65;
+    }
+
+    /* ── BOOK ── */
+    #book { background: var(--off); }
+
+    .book-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .book-info .section-title { color: var(--navy); }
+
+    .book-bullets {
+      margin-top: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .book-bullet {
+      display: flex; align-items: center; gap: 0.7rem;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .book-bullet .dot {
+      width: 8px; height: 8px; flex-shrink: 0;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .calendly-embed {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1.5px solid rgba(59,130,246,0.15);
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(10,22,40,0.08);
+      min-height: 580px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .calendly-embed iframe {
+      width: 100%; border: none;
+      min-height: 580px;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--white); }
+
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 5rem;
+      align-items: start;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .contact-form {
+      background: var(--off);
+      border-radius: 14px;
+      padding: 2.5rem;
+      border: 1.5px solid rgba(59,130,246,0.1);
+    }
+
+    .form-group {
+      display: flex; flex-direction: column; gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.75rem 1rem;
+      border: 1.5px solid rgba(59,130,246,0.15);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-success {
+      display: none;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      color: var(--blue-light);
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      padding: 3.5rem 5% 2rem;
+      border-top: 1px solid rgba(59,130,246,0.12);
+    }
+
+    .footer-inner {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 2rem;
+      max-width: 1100px; margin: 0 auto;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .footer-brand .nav-logo { font-size: 1.2rem; }
+    .footer-tagline {
+      font-size: 0.85rem;
+      color: var(--steel);
+      margin-top: 0.5rem;
+      max-width: 240px;
+      line-height: 1.6;
+    }
+
+    .footer-links-group h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel);
+      margin-bottom: 1rem;
+    }
+    .footer-links-group ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-links-group a {
+      font-size: 0.88rem;
+      color: var(--mist);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-links-group a:hover { color: var(--accent-glow); }
+
+    .footer-bottom {
+      max-width: 1100px; margin: 1.5rem auto 0;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--steel);
+    }
+    .footer-legal {
+      display: flex; gap: 1.5rem;
+    }
+    .footer-legal a {
+      font-size: 0.8rem;
+      color: var(--steel);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-legal a:hover { color: var(--mist); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(10,22,40,0.8);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 2.5rem;
+      max-width: 480px; width: 100%;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(10,22,40,0.3);
+      animation: fadeUp 0.3s ease both;
+    }
+
+    .modal-close {
+      position: absolute; top: 1.25rem; right: 1.25rem;
+      background: none; border: none;
+      font-size: 1.3rem; color: var(--text-light);
+      cursor: pointer; transition: color var(--transition);
+    }
+    .modal-close:hover { color: var(--navy); }
+
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+    .modal-sub {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+
+    .stripe-note {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 0.75rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+    }
+
+    .payment-placeholder {
+      background: var(--off);
+      border: 1.5px dashed rgba(59,130,246,0.25);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+    .payment-placeholder p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .payment-placeholder code {
+      font-size: 0.78rem;
+      background: rgba(59,130,246,0.08);
+      color: var(--blue-light);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .about-grid,
+      .products-grid,
+      .book-inner,
+      .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .scorecard-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .process-steps::before { display: none; }
+
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      /* Product 2 full-width audit card — stack on mobile */
+      .product-card[style*="grid-column"] > div {
+        grid-template-columns: 1fr !important;
+      }
+      .product-card[style*="grid-column"] .product-header {
+        border-radius: 0 !important;
+      }
+      .product-card[style*="grid-column"] .product-body {
+        grid-template-columns: 1fr !important;
+        border-left: none !important;
+        border-top: 1px solid var(--off);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .process-steps { grid-template-columns: 1fr; }
+      .hero-stats { gap: 1.5rem; }
+
+      /* Scorecard capture form — stack button below input */
+      .capture-row { flex-direction: column; }
+      .capture-row input { min-width: unset; width: 100%; }
+      .capture-row .btn-primary { width: 100%; justify-content: center; }
+
+      /* Product cards — tighten padding on small screens */
+      .product-header { padding: 1.5rem 1.25rem 1.25rem; }
+      .product-body { padding: 1.25rem; }
+      .product-name { font-size: 1.05rem; }
+      .product-badge-row { flex-wrap: wrap; gap: 0.4rem; }
+
+      /* Section padding tighter on mobile */
+      section { padding: 60px 5%; }
+      #scorecard { padding: 50px 5%; }
+    }
+
+    /* mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0; z-index: 99;
+      background: var(--navy);
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .mobile-menu a:hover { color: var(--accent-glow); }
+    .mobile-menu-close {
+      position: absolute; top: 1.5rem; right: 5%;
+      background: none; border: none;
+      font-size: 1.8rem; color: var(--white); cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Sigma<span>tica</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#book" class="nav-cta">Book a Call</a></li>
+  </ul>
+  <div class="nav-hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose">✕</button>
+  <a href="#about" class="menu-link">About</a>
+  <a href="#products" class="menu-link">Products</a>
+  <a href="#process" class="menu-link">Process</a>
+  <a href="#contact" class="menu-link">Contact</a>
+  <a href="#book" class="menu-link">Book a Call</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Risk Auditing & Consulting for Commercial Operators</div>
+    <h1 class="hero-title">Reduce Your Exposure.<br /><em>Before a Verdict Does.</em></h1>
+    <p class="hero-sub" style="color: #c8d8ec; font-size: 1.15rem; line-height: 1.75; margin-bottom: 0.5rem;">
+      One lawsuit. One logbook violation your driver forgot to complete. One plaintiff's attorney who knows exactly where to look.
+    </p>
+    <p class="hero-sub">
+      That's all it takes to turn a profitable trucking operation into an eight-figure liability. Most carriers don't find out they had gaps until it's too late. Sigmatica finds them first.
+    </p>
+    <div class="hero-actions">
+      <a href="#products" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        View Products
+      </a>
+      <a href="#book" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Book a Free Call
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">$<span>51</span>M<sup style="font-size:0.55em; font-weight:700; color:var(--accent-glow); vertical-align:super;">*</sup></div>
+        <div class="stat-label">Median Nuclear Verdict (2024)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num"><span>967</span>%<sup style="font-size:0.55em; font-weight:700; color:var(--accent-glow); vertical-align:super;">**</sup></div>
+        <div class="stat-label">Increase in Avg. Verdict Size, 2010–2018</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">$<span>102</span>M<sup style="font-size:0.55em; font-weight:700; color:var(--accent-glow); vertical-align:super;">***</sup></div>
+        <div class="stat-label">Lost Annually to Excess Jury Awards</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="about-card">
+        <div class="about-card-title">Factors Yielding Plaintiff Verdicts — ATRI Data<sup style="color:var(--accent-glow); font-size:0.75em;">†</sup></div>
+        <div class="risk-meter">
+          <div class="risk-row">
+            <div class="risk-label-row">
+              <span class="risk-label">Hours-of-Service / Logbook Violations</span>
+              <span class="risk-val">100%</span>
+            </div>
+            <div class="risk-track"><div class="risk-fill" data-width="100"></div></div>
+          </div>
+          <div class="risk-row">
+            <div class="risk-label-row">
+              <span class="risk-label">Lack of Clean Driver History</span>
+              <span class="risk-val">100%</span>
+            </div>
+            <div class="risk-track"><div class="risk-fill" data-width="100"></div></div>
+          </div>
+          <div class="risk-row">
+            <div class="risk-label-row">
+              <span class="risk-label">Driver Health-Related Issues</span>
+              <span class="risk-val">100%</span>
+            </div>
+            <div class="risk-track"><div class="risk-fill" data-width="100"></div></div>
+          </div>
+          <div class="risk-row">
+            <div class="risk-label-row">
+              <span class="risk-label">Cell Phone Use at Time of Crash</span>
+              <span class="risk-val">92%</span>
+            </div>
+            <div class="risk-track"><div class="risk-fill" data-width="92"></div></div>
+          </div>
+          <div class="risk-row">
+            <div class="risk-label-row">
+              <span class="risk-label">Improper Hiring or Onboarding</span>
+              <span class="risk-val">↑ Award</span>
+            </div>
+            <div class="risk-track"><div class="risk-fill" data-width="85"></div></div>
+          </div>
+        </div>
+        <p style="font-size:0.7rem; color: var(--steel); margin-top: 1.25rem; line-height: 1.5;">
+          <sup style="color:var(--accent-glow);">†</sup> Source: ATRI, <em>Understanding the Impact of Nuclear Verdicts on the Trucking Industry</em>, 2020. Analysis of 600+ cases, 2006–2019. Percentages reflect share of cases yielding plaintiff verdicts when factor was present.
+        </p>
+      </div>
+    </div>
+
+    <div class="about-text reveal">
+      <span class="section-tag">Why Sigmatica</span>
+      <h2 class="section-title">Plaintiffs' lawyers know exactly what to look for.<br/>Do you?</h2>
+      <p class="section-sub">
+        Nuclear verdicts don't happen by accident. They're the result of documented failures, policy gaps, and compliance oversights that get exposed in litigation. Sigmatica exists to find those gaps first — and fix them.
+      </p>
+      <div class="about-points">
+        <div class="about-point">
+          <div class="point-icon">🔍</div>
+          <div class="point-text">
+            <h4>Proactive Audit Framework</h4>
+            <p>We audit your operations before opposing counsel does, identifying the exact documentation and policy failures that lead to large awards.</p>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="point-icon">📋</div>
+          <div class="point-text">
+            <h4>Actionable Deliverables</h4>
+            <p>No vague recommendations. Every audit produces a clear, prioritized report with specific remediation steps you can implement immediately.</p>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="point-icon">🛡️</div>
+          <div class="point-text">
+            <h4>Built for Commercial Operators</h4>
+            <p>Our methodology is purpose-built for the industries where nuclear verdicts are most common — transportation, logistics, construction, and fleet operations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORECARD EMAIL CAPTURE -->
+<section id="scorecard">
+  <div class="scorecard-inner">
+    <div class="scorecard-text reveal">
+      <span class="section-tag">Free Download</span>
+      <h2 class="section-title">Find out your risk score in 5 minutes</h2>
+      <p class="section-sub">The Nuclear Verdict Risk Scorecard is a free 20-question self-assessment that tells you exactly where your operation is exposed — based on ATRI's analysis of 600+ real trucking cases.</p>
+      <div class="scorecard-bullets">
+        <div class="scorecard-bullet"><span class="chk">✓</span> 20 yes/no questions across 4 risk categories</div>
+        <div class="scorecard-bullet"><span class="chk">✓</span> Instant risk level score (Low / Moderate / High / Critical)</div>
+        <div class="scorecard-bullet"><span class="chk">✓</span> Based on real ATRI litigation data — not guesswork</div>
+        <div class="scorecard-bullet"><span class="chk">✓</span> Immediate PDF download — no waiting</div>
+        <div class="scorecard-bullet"><span class="chk">✓</span> 100% free. No credit card required.</div>
+      </div>
+    </div>
+    <div class="capture-box reveal">
+      <h3>Get the Free Scorecard</h3>
+      <p>Enter your details below and we'll send you the scorecard instantly — plus you'll receive the <strong style="color:var(--accent-glow);">Sigmatica Monday Edition</strong>, our weekly risk intelligence briefing for commercial operators.</p>
+      <div class="form-group">
+        <label style="color: var(--mist);">First Name</label>
+        <input type="text" id="cap-name" placeholder="John" style="color:var(--white);" />
+      </div>
+      <div class="capture-row">
+        <input type="email" id="cap-email" placeholder="john@yourcompany.com" />
+        <button class="btn-primary" onclick="submitCapture()" style="white-space:nowrap;">
+          Send Me the Scorecard →
+        </button>
+      </div>
+      <div class="capture-success" id="captureSuccess">
+        ✅ Check your inbox! The scorecard is on its way.
+      </div>
+      <p class="capture-note">No spam. Unsubscribe anytime. Your info is never sold.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="products-header reveal">
+    <span class="section-tag">Products</span>
+    <h2 class="section-title">Every level of protection covered</h2>
+    <p class="section-sub">From a free risk scorecard to a full in-depth audit — Sigmatica has the right product for wherever you are in your risk reduction journey.</p>
+  </div>
+
+  <div class="products-grid" style="grid-template-columns: repeat(2, 1fr);">
+
+    <!-- FREE: Scorecard -->
+    <div class="product-card reveal">
+      <div class="product-header">
+        <div class="product-badge-row">
+          <span class="product-badge">Free Download</span>
+          <span class="product-badge" style="color:var(--accent-glow);background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.25);">Lead Magnet</span>
+        </div>
+        <div class="product-name">Nuclear Verdict Risk Scorecard</div>
+      </div>
+      <div class="product-body">
+        <p class="product-desc">A 20-question self-assessment that gives every trucking operator an instant snapshot of their legal risk exposure — based on ATRI litigation research.</p>
+        <ul class="product-features">
+          <li>20 questions across 4 risk categories</li>
+          <li>Instant risk level: Low / Moderate / High / Critical</li>
+          <li>Grounded in ATRI's 600+ case study data</li>
+          <li>Immediate PDF download — no waiting</li>
+          <li>Triggers subscription to the Monday Edition</li>
+        </ul>
+        <div class="product-price-row">
+          <span class="price-current" style="color:var(--accent);">FREE</span>
+        </div>
+        <a href="#scorecard" class="btn-outline" style="width:100%;justify-content:center;text-decoration:none;color:var(--navy);border-color:rgba(10,22,40,0.2);">
+          Download Free Scorecard →
+        </a>
+      </div>
+    </div>
+
+    <!-- FREE: Monday Edition Newsletter -->
+    <div class="product-card reveal">
+      <div class="product-header">
+        <div class="product-badge-row">
+          <span class="product-badge">Free Subscription</span>
+          <span class="product-badge" style="color:var(--accent-glow);background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.25);">Weekly Newsletter</span>
+        </div>
+        <div class="product-name">The Sigmatica Monday Edition</div>
+      </div>
+      <div class="product-body">
+        <p class="product-desc">Weekly risk intelligence for commercial operators — real verdicts, FMCSA compliance updates, legal developments, and actionable insights delivered every Monday morning.</p>
+        <ul class="product-features">
+          <li>Verdict Watch: recent nuclear verdict breakdowns</li>
+          <li>FMCSA compliance updates that affect your operation</li>
+          <li>Legislative & tort reform developments</li>
+          <li>3 operator action items each week</li>
+          <li>Grounded in ATRI data and sourced case reporting</li>
+        </ul>
+        <div class="product-price-row">
+          <span class="price-current" style="color:var(--accent);">FREE</span>
+        </div>
+        <a href="#scorecard" class="btn-outline" style="width:100%;justify-content:center;text-decoration:none;color:var(--navy);border-color:rgba(10,22,40,0.2);">
+          Subscribe Free →
+        </a>
+      </div>
+    </div>
+
+    <!-- Product 1: Asset Doc -->
+    <div class="product-card featured reveal">
+      <div class="product-header">
+        <div class="product-badge-row">
+          <span class="product-badge">Product 1</span>
+          <span class="product-badge sale">🔥 On Sale</span>
+        </div>
+        <div class="product-name">Risk Reduction Asset Document</div>
+      </div>
+      <div class="product-body">
+        <p class="product-desc">A focused 5-page commercial operator asset document packed with the frameworks, checklists, and strategies that reduce your legal risk exposure — actionable from day one.</p>
+        <ul class="product-features">
+          <li>5-page professional asset document</li>
+          <li>Core risk exposure framework</li>
+          <li>Documentation & policy checklists</li>
+          <li>Incident response best practices</li>
+          <li>Immediate digital delivery (PDF)</li>
+        </ul>
+        <div class="product-price-row">
+          <span class="price-current">$299</span>
+          <span class="price-original">$599</span>
+          <span class="price-save">Save $300</span>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;" onclick="openPayModal()">
+          Purchase Now →
+        </button>
+        <div class="guarantee-badge">
+          <div class="guarantee-icon">🛡️</div>
+          <div class="guarantee-text">
+            <strong>14-Day Money-Back Guarantee</strong>
+            <span>Not satisfied? Contact us within 14 days for a full 100% refund — no questions asked.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 3: Templates Pack -->
+    <div class="product-card reveal">
+      <div class="product-header">
+        <div class="product-badge-row">
+          <span class="product-badge">Product 3</span>
+          <span class="product-badge sale">New</span>
+        </div>
+        <div class="product-name">Policy & Documentation Templates Pack</div>
+      </div>
+      <div class="product-body">
+        <p class="product-desc">Five ready-to-use templates that close the most common documentation gaps exploited in trucking litigation — based on FMCSA requirements and ATRI research.</p>
+        <ul class="product-features">
+          <li>Driver Qualification File (DQF) Master Checklist</li>
+          <li>Post-Incident Response Protocol</li>
+          <li>Cell Phone & Distracted Driving Policy + Sign-off</li>
+          <li>New Driver Hiring & Onboarding Documentation Kit</li>
+          <li>Annual Driver Safety Review & MVR Log</li>
+        </ul>
+        <div class="product-price-row">
+          <span class="price-current">$149</span>
+          <span class="price-save">Instant Download</span>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;" onclick="openTemplatesModal()">
+          Purchase Templates Pack →
+        </button>
+      </div>
+    </div>
+
+    <!-- Product 2: Full Audit — spans full width -->
+    <div class="product-card reveal" style="grid-column:1/-1;">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:0;">
+        <div class="product-header" style="display:flex;flex-direction:column;justify-content:center;border-radius:0;">
+          <div class="product-badge-row">
+            <span class="product-badge">Product 2</span>
+            <span class="product-badge coming">Coming Soon</span>
+          </div>
+          <div class="product-name">In-Depth Award Risk Exposure Reduction Audit</div>
+        </div>
+        <div class="product-body" style="display:grid;grid-template-columns:1fr 1fr 200px;gap:1.5rem;align-items:start;border-left:1px solid var(--off);">
+          <p class="product-desc" style="margin-bottom:0;">A comprehensive 10–12 page audit of your operation's full risk exposure profile, customized to your business, with a prioritized remediation roadmap.</p>
+          <ul class="product-features" style="margin-bottom:0;">
+            <li>10–12 page in-depth audit report</li>
+            <li>Full operational risk assessment</li>
+            <li>Prioritized remediation roadmap</li>
+            <li>Follow-up strategy consultation call</li>
+          </ul>
+          <div style="display:flex;flex-direction:column;justify-content:center;gap:0.75rem;">
+            <span class="price-contact">Contact for Pricing</span>
+            <a href="#contact" class="btn-outline" style="text-decoration:none;justify-content:center;color:var(--navy);border-color:rgba(10,22,40,0.2);">
+              Inquire →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div style="max-width:600px; margin-bottom:1rem;" class="reveal">
+    <span class="section-tag">How It Works</span>
+    <h2 class="section-title">From exposure to protection in four steps</h2>
+    <p class="section-sub">A clear, structured process designed to identify and close your risk gaps as efficiently as possible.</p>
+  </div>
+
+  <div class="process-steps">
+    <div class="step-card reveal">
+      <div class="step-num">1</div>
+      <div class="step-title">Discovery Call</div>
+      <p class="step-desc">We meet to understand your operation, industry, and current risk posture. No obligation, no pitch — just clarity.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">2</div>
+      <div class="step-title">Risk Assessment</div>
+      <p class="step-desc">We review your documentation, policies, training records, and incident history to identify exposure points.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">3</div>
+      <div class="step-title">Audit Report</div>
+      <p class="step-desc">You receive a clear, prioritized report detailing vulnerabilities and the specific actions needed to reduce risk.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">4</div>
+      <div class="step-title">Implementation</div>
+      <p class="step-desc">We guide your team through the remediation process, ensuring changes are correctly implemented and documented.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK A CALL -->
+<section id="book">
+  <div class="book-inner">
+    <div class="book-info reveal">
+      <span class="section-tag">Schedule a Call</span>
+      <h2 class="section-title">Free 15-Minute Discovery Call</h2>
+      <p class="section-sub">
+        Not sure where to start? Book a no-obligation 15-minute call with our team. We'll discuss your operation, current risk concerns, and which product makes the most sense for you.
+      </p>
+      <div class="book-bullets">
+        <div class="book-bullet"><div class="dot"></div>No sales pressure — just honest conversation</div>
+        <div class="book-bullet"><div class="dot"></div>We'll identify your highest-priority risk areas</div>
+        <div class="book-bullet"><div class="dot"></div>Get clarity on the right next step for your business</div>
+        <div class="book-bullet"><div class="dot"></div>15 minutes, on your schedule</div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="calendly-embed" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;padding:3rem 2.5rem;background:var(--white);border-radius:14px;border:1.5px solid rgba(59,130,246,0.15);box-shadow:0 8px 40px rgba(10,22,40,0.08);min-height:380px;">
+        <div style="width:64px;height:64px;background:rgba(59,130,246,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;">Book Your Free 15-Minute Call</div>
+          <p style="font-size:0.92rem;color:var(--text-light);line-height:1.7;max-width:320px;margin:0 auto;">Choose a time that works for you. No sales pressure — just a direct conversation about where your operation's exposure sits.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;width:100%;max-width:300px;">
+          <a href="https://cal.com/m-j67xh2/15min" target="_blank" rel="noopener" class="btn-primary" style="width:100%;justify-content:center;text-decoration:none;font-size:1rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schedule a Call →
+          </a>
+          <span style="font-size:0.75rem;color:var(--text-light);">Opens in a new tab · Powered by Cal.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="reveal">
+      <span class="section-tag">Contact Us</span>
+      <h2 class="section-title">Have a question?<br/>We'd love to hear from you.</h2>
+      <p class="section-sub">
+        Whether you're curious about the audit process, want to discuss a specific risk concern, or are ready to get started — reach out and we'll respond promptly.
+      </p>
+      <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 0.9rem;">
+        <div style="display:flex; align-items:center; gap: 0.7rem; font-size:0.9rem; color:var(--text-light);">
+          <span style="color:var(--accent)">📧</span>
+          <span>info@sigmatica.ca</span>
+        </div>
+        <div style="display:flex; align-items:center; gap: 0.7rem; font-size:0.9rem; color:var(--text-light);">
+          <span style="color:var(--accent)">🌐</span>
+          <span>www.sigmatica.ca</span>
+        </div>
+        <div style="display:flex; align-items:center; gap: 0.7rem; font-size:0.9rem; color:var(--text-light);">
+          <span style="color:var(--accent)">📍</span>
+          <span>British Columbia, Canada</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form reveal">
+      <h3 style="font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:1.5rem;">Send us a message</h3>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="cf-name" placeholder="John Smith" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="cf-email" placeholder="john@yourcompany.com" />
+      </div>
+      <div class="form-group">
+        <label>Company / Organization</label>
+        <input type="text" id="cf-company" placeholder="Your Company Ltd." />
+      </div>
+      <div class="form-group">
+        <label>I'm interested in</label>
+        <select id="cf-interest">
+          <option value="">Select an option…</option>
+          <option>Product 1 — Risk Reduction Asset Document</option>
+          <option>Product 2 — In-Depth Audit</option>
+          <option>Discovery Call</option>
+          <option>General Enquiry</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="cf-message" placeholder="Tell us about your operation and risk concerns…"></textarea>
+      </div>
+      <button class="btn-primary" style="width:100%; justify-content:center;" onclick="submitContact()">
+        Send Message →
+      </button>
+      <div class="form-success" id="formSuccess">
+        ✅ Thanks! We'll be in touch within 1 business day.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CITATIONS -->
+<section id="citations" style="background: var(--navy); padding: 2.5rem 5%; border-top: 1px solid rgba(59,130,246,0.15);">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel); margin-bottom: 1.1rem;">Data Sources & Citations</p>
+    <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+      <p style="font-size: 0.78rem; color: var(--steel); line-height: 1.65;">
+        <sup style="color: var(--accent-glow); font-weight: 700;">*</sup>
+        <strong style="color: var(--mist);">$51M Median Nuclear Verdict (2024):</strong>
+        American Transportation Research Institute (ATRI) / National Law Journal Top 100 Verdicts. "From 2020 to 2024, the total sum of nuclear verdicts surged to $31.3 billion, with the median verdict reaching $51 million." See also: Commercial Carrier Journal, <em>ATRI Report: Trucking Nuclear Verdicts &amp; Litigation Costs Surge</em>, December 2025.
+        <a href="https://www.ccjdigital.com/business/insurance/article/15773236/atri-report-trucking-nuclear-verdicts-litigation-costs-surge" target="_blank" rel="noopener" style="color: var(--accent-glow); text-decoration: none; margin-left: 0.3rem;">↗ View Source</a>
+      </p>
+      <p style="font-size: 0.78rem; color: var(--steel); line-height: 1.65;">
+        <sup style="color: var(--accent-glow); font-weight: 700;">**</sup>
+        <strong style="color: var(--mist);">967% Increase in Average Verdict Size, 2010–2018:</strong>
+        American Transportation Research Institute (ATRI), <em>Understanding the Impact of Nuclear Verdicts on the Trucking Industry</em>, June 2020. Average verdict size for lawsuits above $1M increased from $2,305,736 to $22,288,000 — an increase of 967% — between 2010 and 2018. Also cited by the American Trucking Associations (ATA).
+        <a href="https://www.trucking.org/news-insights/how-nuclear-verdicts-are-strangling-americas-trucking-industry" target="_blank" rel="noopener" style="color: var(--accent-glow); text-decoration: none; margin-left: 0.3rem;">↗ View Source</a>
+      </p>
+      <p style="font-size: 0.78rem; color: var(--steel); line-height: 1.65;">
+        <sup style="color: var(--accent-glow); font-weight: 700;">***</sup>
+        <strong style="color: var(--mist);">$102.8M+ Lost Annually to Excess Jury Awards:</strong>
+        American Transportation Research Institute (ATRI), 2024. ATRI estimates that in 2022, the trucking industry lost upwards of $102.8 million in excess jury awards in cases that were not removed from state courts to federal jurisdiction.
+        <a href="https://www.ccjdigital.com/business/insurance/article/15773236/atri-report-trucking-nuclear-verdicts-litigation-costs-surge" target="_blank" rel="noopener" style="color: var(--accent-glow); text-decoration: none; margin-left: 0.3rem;">↗ View Source</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">Sigma<span>tica</span></a>
+      <p class="footer-tagline">Risk auditing & consulting for commercial operators. Reduce exposure. Protect your business.</p>
+    </div>
+    <div class="footer-links-group">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#products">Risk Reduction Asset Document</a></li>
+        <li><a href="#scorecard">Monday Edition (Free)</a></li>
+        <li><a href="#book">Discovery Call</a></li>
+      </ul>
+    </div>
+    <div class="footer-links-group">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#process">Our Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-links-group">
+      <h4>Get Started</h4>
+      <ul>
+        <li><a href="#book">Book a Free Call</a></li>
+        <li><a href="#products" onclick="openPayModal()">Purchase Product 1</a></li>
+        <li><a href="#contact">Inquire About Audit</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Sigmatica. All rights reserved.</span>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePayModal()">✕</button>
+    <div class="modal-title">Complete Your Purchase</div>
+    <p class="modal-sub">Risk Reduction Asset Document — <strong>$299</strong> <span style="text-decoration:line-through; color:var(--text-light); font-size:0.85rem;">$599</span></p>
+
+    <div class="guarantee-badge" style="margin-bottom:1.25rem; margin-top:0;">
+      <div class="guarantee-icon">🛡️</div>
+      <div class="guarantee-text">
+        <strong>14-Day Money-Back Guarantee</strong>
+        <span>Not satisfied? Full 100% refund — no questions asked.</span>
+      </div>
+    </div>
+
+    <div class="payment-placeholder">
+      <p style="font-weight:600; color:var(--navy); margin-bottom:0.5rem;">💳 Stripe Payment Integration</p>
+      <p>
+        To activate payments, replace <code>YOUR_STRIPE_PUBLISHABLE_KEY</code> in the script below with your Stripe publishable key, and connect your Stripe backend endpoint.
+        <br/><br/>
+        Your Stripe integration is fully scaffolded and ready to go live.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="pay-name" placeholder="John Smith" />
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="pay-email" placeholder="john@yourcompany.com" />
+    </div>
+
+    <button class="btn-primary" style="width:100%; justify-content:center;" onclick="handleStripeCheckout()">
+      Proceed to Secure Payment →
+    </button>
+    <p class="stripe-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Secured by Stripe. Your payment info is never stored.
+    </p>
+  </div>
+</div>
+
+<!-- TEMPLATES MODAL -->
+<div class="modal-overlay" id="templatesModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTemplatesModal()">✕</button>
+    <div class="modal-title">Policy & Documentation Templates Pack</div>
+    <p class="modal-sub">5 ready-to-use templates — <strong>$149</strong> &nbsp; Instant digital delivery</p>
+    <div class="guarantee-badge" style="margin-bottom:1.25rem;margin-top:0;">
+      <div class="guarantee-icon">📄</div>
+      <div class="guarantee-text">
+        <strong>What's included</strong>
+        <span>DQF Checklist · Incident Response Protocol · Cell Phone Policy · Hiring Kit · Annual MVR Log</span>
+      </div>
+    </div>
+    <div class="payment-placeholder">
+      <p style="font-weight:600;color:var(--navy);margin-bottom:0.5rem;">💳 Stripe Payment Integration</p>
+      <p>Add your Stripe key and set the price to <code>$149</code> for this product in your backend checkout session.</p>
+    </div>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="tpl-name" placeholder="John Smith" />
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="tpl-email" placeholder="john@yourcompany.com" />
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;" onclick="handleTemplatesCheckout()">
+      Proceed to Secure Payment →
+    </button>
+    <p class="stripe-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Secured by Stripe. Your payment info is never stored.
+    </p>
+  </div>
+</div>
+
+<script>
+  // ── NAV / MOBILE MENU ──
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuClose  = document.getElementById('menuClose');
+
+  hamburger.addEventListener('click', () => mobileMenu.classList.add('open'));
+  menuClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  document.querySelectorAll('.menu-link').forEach(l => {
+    l.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // animate risk bars
+        e.target.querySelectorAll('.risk-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  function openTemplatesModal()  { document.getElementById('templatesModal').classList.add('open'); }
+  function closeTemplatesModal() { document.getElementById('templatesModal').classList.remove('open'); }
+  document.getElementById('templatesModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTemplatesModal();
+  });
+
+  async function handleTemplatesCheckout() {
+    const name  = document.getElementById('tpl-name').value.trim();
+    const email = document.getElementById('tpl-email').value.trim();
+    if (!name || !email) { alert('Please fill in your name and email.'); return; }
+    if (STRIPE_PUBLISHABLE_KEY === 'YOUR_STRIPE_PUBLISHABLE_KEY') {
+      alert('Stripe is not yet configured. Add your publishable key to activate payments.');
+      return;
+    }
+    // Same pattern as main checkout — set price to 14900 ($149)
+  }
+
+  function submitCapture() {
+    const name  = document.getElementById('cap-name').value.trim();
+    const email = document.getElementById('cap-email').value.trim();
+    if (!name || !email) { alert('Please enter your name and email.'); return; }
+
+    const btn = document.querySelector('#scorecard .btn-primary');
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+    fetch('https://api.convertkit.com/v3/forms/9417700/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: 'JQXkawCU152EZiPe-EY1Fw',
+        first_name: name,
+        email: email
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('captureSuccess').style.display = 'block';
+      if (btn) { btn.style.display = 'none'; }
+    })
+    .catch(err => {
+      alert('Something went wrong. Please try again or email info@sigmatica.ca directly.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Get the Scorecard →'; }
+    });
+  }
+
+  // ── MODAL ──
+  function openPayModal()  { document.getElementById('payModal').classList.add('open'); }
+  function closePayModal() { document.getElementById('payModal').classList.remove('open'); }
+  document.getElementById('payModal').addEventListener('click', function(e) {
+    if (e.target === this) closePayModal();
+  });
+
+  // ── STRIPE SCAFFOLDING ──
+  // Replace with your publishable key when ready:
+  const STRIPE_PUBLISHABLE_KEY = 'YOUR_STRIPE_PUBLISHABLE_KEY';
+
+  async function handleStripeCheckout() {
+    const name  = document.getElementById('pay-name').value.trim();
+    const email = document.getElementById('pay-email').value.trim();
+
+    if (!name || !email) {
+      alert('Please fill in your name and email to continue.');
+      return;
+    }
+
+    if (STRIPE_PUBLISHABLE_KEY === 'YOUR_STRIPE_PUBLISHABLE_KEY') {
+      alert('Stripe is not yet configured. Add your publishable key and backend endpoint to activate payments.');
+      return;
+    }
+
+    // Once you have your Stripe keys & backend:
+    // const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+    // const response = await fetch('/api/create-checkout-session', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ name, email, product: 'risk-reduction-doc', price: 29900 })
+    // });
+    // const session = await response.json();
+    // stripe.redirectToCheckout({ sessionId: session.id });
+  }
+
+  // ── CONTACT FORM ──
+  function submitContact() {
+    const name    = document.getElementById('cf-name').value.trim();
+    const email   = document.getElementById('cf-email').value.trim();
+    const message = document.getElementById('cf-message').value.trim();
+
+    if (!name || !email || !message) {
+      alert('Please fill in your name, email, and message.');
+      return;
+    }
+
+    // Wire to your preferred backend / Formspree / Netlify Forms here
+    // Example with Formspree:
+    // fetch('https://formspree.io/f/YOUR_FORM_ID', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ name, email, message })
+    // });
+
+    document.getElementById('formSuccess').style.display = 'block';
+  }
+</script>
+</body>
+</html>
